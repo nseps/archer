@@ -28,15 +28,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var packUse = "pack [--type|-t " + strings.Join(archive.ListSupported(), "|") + "] [--compression|-c " + strings.Join(compress.ListSupported(), "|") + "] SRCDIR TARGETFILE"
+var packUse = "pack [--type|-t " + strings.Join(archive.ListSupported(), "|") + "] [--compression|-c " + strings.Join(compress.ListSupported(), "|") + "] SRCDIR [TARGETFILE]"
 
 // packCmd represents the pack command
 var packCmd = &cobra.Command{
 	Use:   packUse,
 	Short: "Pack a directory to an archive",
-	Long:  ``,
-	Run:   packRun,
-	Args:  cobra.RangeArgs(1, 2),
+	Long: `Pack a directory to an archive
+
+If TARGETFILE is ommited, an archive with the name SRCDIR.type[.compression] will be crated.
+The type and compression can be ommited if the TARGETFILE contains valid extensions for archive or both.
+
+For example:
+
+  archer pack myDir/ -t tar -c gz
+
+will resault in myDir.tar.gz file being created. Also:
+
+  archer pack myDir/ myDir.tar.gz
+
+will yield the same resault.
+`,
+	Run:  packRun,
+	Args: cobra.RangeArgs(1, 2),
 }
 
 func init() {
@@ -82,6 +96,10 @@ func packRun(cmd *cobra.Command, args []string) {
 			// append file ext
 			trgt = fmt.Sprintf("%s.%s", trgt, c)
 		}
+		// if we are given a name just replace
+		if len(args) == 2 {
+			trgt = args[1]
+		}
 	}
 
 	// Create target file
@@ -92,7 +110,8 @@ func packRun(cmd *cobra.Command, args []string) {
 	// Wrap if compresion requested
 	var out io.WriteCloser
 	if comp != nil {
-		out = comp.Compress(f)
+		out, err = comp.Compress(f)
+		dieOnErr(err)
 		defer out.Close()
 	} else {
 		out = f

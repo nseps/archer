@@ -14,7 +14,7 @@ func init() {
 
 type cpioArchiver struct{}
 
-func (t cpioArchiver) Pack(src string, target io.Writer) error {
+func (a cpioArchiver) Pack(src string, target io.Writer) error {
 	cpiow := cpio.NewWriter(target)
 
 	err := filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
@@ -79,8 +79,8 @@ func (t cpioArchiver) Pack(src string, target io.Writer) error {
 	return cpiow.Close()
 }
 
-func (t cpioArchiver) Unpack(src io.Reader, target string) error {
-	if err := os.MkdirAll(target, 0755); err != nil {
+func (a cpioArchiver) Unpack(src io.Reader, target string) error {
+	if err := os.Mkdir(target, 0755); err != nil {
 		return err
 	}
 
@@ -97,21 +97,22 @@ func (t cpioArchiver) Unpack(src io.Reader, target string) error {
 		}
 
 		path := filepath.Join(target, hdr.Name)
+		mode := FileMode{hdr.FileInfo().Mode()}
 
 		switch {
-		case hdr.Mode.IsDir():
+		case mode.IsDir():
 			if err := os.MkdirAll(path, 0755); err != nil {
 				return err
 			}
-		case hdr.Mode.IsRegular():
-			f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.FileMode(hdr.Mode))
+		case mode.IsRegular():
+			f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, hdr.FileInfo().Mode())
 			if err != nil {
 				return err
 			}
 			if _, err := io.Copy(f, cpior); err != nil {
 				return err
 			}
-		case hdr.Mode.IsSymlink():
+		case mode.IsSymlink():
 			if err := os.Symlink(hdr.Linkname, path); err != nil {
 				return err
 			}

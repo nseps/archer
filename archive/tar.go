@@ -13,7 +13,7 @@ func init() {
 
 type tarArchiver struct{}
 
-func (t tarArchiver) Pack(src string, target io.Writer) error {
+func (a tarArchiver) Pack(src string, target io.Writer) error {
 	tarw := tar.NewWriter(target)
 
 	err := filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
@@ -70,8 +70,8 @@ func (t tarArchiver) Pack(src string, target io.Writer) error {
 	return tarw.Close()
 }
 
-func (t tarArchiver) Unpack(src io.Reader, target string) error {
-	if err := os.MkdirAll(target, 0755); err != nil {
+func (a tarArchiver) Unpack(src io.Reader, target string) error {
+	if err := os.Mkdir(target, 0755); err != nil {
 		return err
 	}
 
@@ -88,13 +88,14 @@ func (t tarArchiver) Unpack(src io.Reader, target string) error {
 		}
 
 		path := filepath.Join(target, hdr.Name)
+		mode := FileMode{hdr.FileInfo().Mode()}
 
-		switch hdr.Typeflag {
-		case tar.TypeDir:
+		switch {
+		case mode.IsDir():
 			if err := os.MkdirAll(path, 0755); err != nil {
 				return err
 			}
-		case tar.TypeReg:
+		case mode.IsRegular():
 			f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.FileMode(hdr.Mode))
 			if err != nil {
 				return err
@@ -102,7 +103,7 @@ func (t tarArchiver) Unpack(src io.Reader, target string) error {
 			if _, err := io.Copy(f, tarr); err != nil {
 				return err
 			}
-		case tar.TypeSymlink:
+		case mode.IsSymlink():
 			if err := os.Symlink(hdr.Linkname, path); err != nil {
 				return err
 			}

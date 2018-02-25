@@ -11,10 +11,10 @@ func init() {
 
 type gzCompressor struct{}
 
-func (gz gzCompressor) Compress(w io.Writer) io.WriteCloser {
-	return gzip.NewWriter(w)
+func (comp gzCompressor) Compress(w io.Writer) (io.WriteCloser, error) {
+	return gzip.NewWriter(w), nil
 }
 
-func (gz gzCompressor) Decompress(r io.Reader) (io.ReadCloser, error) {
+func (comp gzCompressor) Decompress(r io.Reader) (io.ReadCloser, error) {
 	return gzip.NewReader(r)
 }

@@ -20,7 +20,7 @@ func (e DoesNotExistError) Error() string {
 var compressors = map[string]Compressor{}
 
 type Compressor interface {
-	Compress(w io.Writer) io.WriteCloser
+	Compress(w io.Writer) (io.WriteCloser, error)
 	Decompress(r io.Reader) (io.ReadCloser, error)
 }
 

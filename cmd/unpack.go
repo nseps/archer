@@ -25,11 +25,14 @@ import (
 
 // unpackCmd represents the unpack command
 var unpackCmd = &cobra.Command{
-	Use:   "unpack SRCFILE TARGETDIR",
+	Use:   "unpack SRCFILE [TARGETDIR]",
 	Short: "Unpack an archive to a directory",
-	Long:  ``,
-	Run:   unpackRun,
-	Args:  cobra.RangeArgs(1, 2),
+	Long: `Unpack an archive to a directory using manna to detect the compression and archive type.
+The file name extentions are not taken into consideration.
+
+If TARGETDIR is not specified, SRCFILE name without extension will be used`,
+	Run:  unpackRun,
+	Args: cobra.RangeArgs(1, 2),
 }
 
 func init() {

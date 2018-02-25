@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 	Use:   "archer",
 	Short: "An archiver fused with magic",
 	Long:  ``,
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Run:   rootCmdRun,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -36,6 +36,33 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.Flags().StringP("completionFile", "f", "", "Completion out file")
+	rootCmd.Flags().String("shell", "bash", "Target shell name for completion")
+}
+
+func rootCmdRun(cmd *cobra.Command, args []string) {
+	compf, err := cmd.Flags().GetString("completionFile")
+	dieOnErr(err)
+
+	if compf == "" {
+		cmd.Usage()
+		return
+	}
+	shl, err := cmd.Flags().GetString("shell")
+	dieOnErr(err)
+
+	switch shl {
+	case "bash":
+		err = cmd.GenBashCompletionFile(compf)
+	case "zsh":
+		err = cmd.GenZshCompletionFile(compf)
+	default:
+		dieOnErr(fmt.Errorf("shell not supported: %s", shl))
+	}
+	dieOnErr(err)
 }
 
 func dieOnErr(err error) {

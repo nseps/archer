@@ -5,6 +5,13 @@ import (
 	"io"
 )
 
+type Archiver interface {
+	Pack(src string, target io.Writer) error
+	Unpack(src io.Reader, target string) error
+}
+
+var archivers = map[string]Archiver{}
+
 type AlreadyExistsError string
 
 func (e AlreadyExistsError) Error() string {
@@ -15,13 +22,6 @@ type DoesNotExistError string
 
 func (e DoesNotExistError) Error() string {
 	return fmt.Sprintf("Archiver with name \"%s\" does not exist", string(e))
-}
-
-var archivers = map[string]Archiver{}
-
-type Archiver interface {
-	Pack(src string, target io.Writer) error
-	Unpack(src io.Reader, target string) error
 }
 
 func RegisterArchiver(name string, ar Archiver) error {
