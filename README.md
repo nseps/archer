@@ -55,7 +55,7 @@ You can copy it **/etc/bash_completion.d/** if an option. Otherwise you can just
 
 # Contributing & extending
 
-No idea. File a PR and let's have a chat. :)
+Contributions are wecome. Jus file a PR.
 
 ## Hacking Guide
 
