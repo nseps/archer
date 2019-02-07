@@ -16,11 +16,14 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/nseps/archer/match"
 	"github.com/spf13/cobra"
+	"github.com/thegrumpylion/archer/compress"
+	"github.com/thegrumpylion/archer/match"
 )
 
 // unpackCmd represents the unpack command
@@ -40,17 +43,31 @@ func init() {
 }
 
 func unpackRun(cmd *cobra.Command, args []string) {
+
 	// read source file
 	f, err := os.Open(args[0])
 	dieOnErr(err)
 	defer f.Close()
+
 	// detect compression if any
-	in, err := match.Compression(f)
+	cmp, crdr, err := match.Compression(f)
 	dieOnErr(err)
+
+	var in io.ReadCloser
+
+	if _, ok := err.(compress.DoesNotExistError); ok {
+		in = ioutil.NopCloser(crdr)
+	} else {
+		dieOnErr(err)
+		in, err = cmp.Decompress(crdr)
+		dieOnErr(err)
+	}
 	defer in.Close()
+
 	// detect archive type
 	ar, rdr, err := match.Archive(in)
 	dieOnErr(err)
+
 	// check for target
 	var trgt string
 	if len(args) == 2 {
@@ -62,6 +79,7 @@ func unpackRun(cmd *cobra.Command, args []string) {
 		}
 		trgt = parts[0]
 	}
+
 	// do your thing
 	err = ar.Unpack(rdr, trgt)
 	dieOnErr(err)

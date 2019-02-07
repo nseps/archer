@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/nseps/archer/cmd"
+import "github.com/thegrumpylion/archer/cmd"
 
 func main() {
 	cmd.Execute()

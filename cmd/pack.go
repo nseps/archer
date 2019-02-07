@@ -21,10 +21,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nseps/archer/match"
+	"github.com/thegrumpylion/archer/match"
 
-	"github.com/nseps/archer/archive"
-	"github.com/nseps/archer/compress"
+	"github.com/thegrumpylion/archer/archive"
+	"github.com/thegrumpylion/archer/compress"
 	"github.com/spf13/cobra"
 )
 

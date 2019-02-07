@@ -85,7 +85,7 @@ func (a tarArchiver) Pack(src string, target io.Writer) error {
 }
 
 func (a tarArchiver) Unpack(src io.Reader, target string) error {
-	if err := os.Mkdir(target, 0755); err != nil {
+	if err := os.MkdirAll(target, 0755); err != nil {
 		return err
 	}
 

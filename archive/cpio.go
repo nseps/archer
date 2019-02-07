@@ -19,7 +19,7 @@ import (
 	"os"
 	"path/filepath"
 
-	cpio "github.com/nseps/go-cpio"
+	cpio "github.com/cavaliercoder/go-cpio"
 )
 
 func init() {
@@ -94,7 +94,7 @@ func (a cpioArchiver) Pack(src string, target io.Writer) error {
 }
 
 func (a cpioArchiver) Unpack(src io.Reader, target string) error {
-	if err := os.Mkdir(target, 0755); err != nil {
+	if err := os.MkdirAll(target, 0755); err != nil {
 		return err
 	}
 

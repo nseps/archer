@@ -18,12 +18,11 @@ import (
 	"bufio"
 	"errors"
 	"io"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 
-	"github.com/nseps/archer/archive"
-	"github.com/nseps/archer/compress"
+	"github.com/thegrumpylion/archer/archive"
+	"github.com/thegrumpylion/archer/compress"
 
 	"gopkg.in/h2non/filetype.v1"
 )
@@ -31,29 +30,29 @@ import (
 // Compression will wrap reader r with the compresor if the file
 // signature match. We get some overhead with wrapping with buffered
 // readers but we gain magic convenience
-func Compression(r io.Reader) (io.ReadCloser, error) {
+func Compression(r io.Reader) (compress.Compressor, io.Reader, error) {
 	// we wrap with buffered reader to do Peek
 	br := bufio.NewReader(r)
 	// 262 comes from the filetype lib
 	hdr, err := br.Peek(262)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	ty, err := filetype.Match(hdr)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if ty == filetype.Unknown {
-		return nil, errors.New("Cannot detect file type")
+		return nil, nil, errors.New("Cannot detect file type")
 	}
 
 	comp, err := compress.GetCompressor(ty.Extension)
 	// we don't support this kind of compression
 	if err != nil {
-		return ioutil.NopCloser(br), nil
+		return nil, br, nil
 	}
-	return comp.Decompress(br)
+	return comp, br, nil
 }
 
 // Archive will try to match file signature with registered archivers
