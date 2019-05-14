@@ -50,10 +50,8 @@ func unpackRun(cmd *cobra.Command, args []string) {
 	defer f.Close()
 
 	// detect compression if any
-	cmp, crdr, err := match.Compression(f)
-	dieOnErr(err)
-
 	var in io.ReadCloser
+	cmp, crdr, err := match.Compression(f)
 
 	if _, ok := err.(compress.DoesNotExistError); ok {
 		in = ioutil.NopCloser(crdr)

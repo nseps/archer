@@ -48,11 +48,7 @@ func Compression(r io.Reader) (compress.Compressor, io.Reader, error) {
 	}
 
 	comp, err := compress.GetCompressor(ty.Extension)
-	// we don't support this kind of compression
-	if err != nil {
-		return nil, br, nil
-	}
-	return comp, br, nil
+	return comp, br, err
 }
 
 // Archive will try to match file signature with registered archivers
