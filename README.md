@@ -41,9 +41,14 @@ run `archer -h` for more
 
 The main focus of this tools is handling tar and cpio archives as it was born to handle container images and initramfs archives. The file type support will be implemented when needed.
 
+# TODO
+
+* List
+* Verify 
+
 # Installing & Configuring
 
-`go get github.com/nseps/archer`
+`go get -u github.com/thegrumpylion/archer`
 
 ## Generate completion file
 
@@ -55,7 +60,7 @@ You can copy it **/etc/bash_completion.d/** if an option. Otherwise you can just
 
 # Contributing & extending
 
-Contributions are wecome. Jus file a PR.
+Contributions are welcome. Just file a PR.
 
 ## Hacking Guide
 
