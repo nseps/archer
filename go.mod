@@ -11,4 +11,5 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/thegrumpylion/ar v0.0.0-20190521210525-0874c1506527
 	github.com/ulikunitz/xz v0.5.6
+	gopkg.in/h2non/filetype.v1 v1.0.5
 )

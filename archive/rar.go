@@ -63,6 +63,9 @@ func (a rarArchiver) Unpack(src io.Reader, target string) error {
 				return err
 			}
 		case mode.IsRegular():
+			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+				return err
+			}
 			f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, hdr.Mode())
 			if err != nil {
 				return err

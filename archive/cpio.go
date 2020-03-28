@@ -115,6 +115,9 @@ func (a cpioArchiver) Unpack(src io.Reader, target string) error {
 
 		switch {
 		case mode.IsDir():
+			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+				return err
+			}
 			if err := os.MkdirAll(path, 0755); err != nil {
 				return err
 			}

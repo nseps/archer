@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -44,9 +46,21 @@ func init() {
 
 func unpackRun(cmd *cobra.Command, args []string) {
 
-	// read source file
-	f, err := os.Open(args[0])
+	u, err := url.Parse(args[0])
 	dieOnErr(err)
+
+	var f io.ReadCloser
+
+	if u.Scheme == "" {
+		// read source file
+		f, err = os.Open(args[0])
+		dieOnErr(err)
+	} else {
+		resp, err := http.Get(u.String())
+		dieOnErr(err)
+
+		f = resp.Body
+	}
 	defer f.Close()
 
 	// detect compression if any
