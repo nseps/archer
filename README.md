@@ -8,6 +8,7 @@ Archiving simplified
 * cpio
 * zip
 * rar
+* ar
 
 # Compression Formats
 
@@ -28,7 +29,7 @@ Archiving simplified
 
 # Combinations
 
-You can combine any archive type (except rar) with any compression. That means 12 compressed and 3 uncompressed output file types.
+You can combine any archive type (except rar) with any compression.
 
 # What can it do
 
@@ -64,7 +65,7 @@ Contributions are welcome. Just file a PR.
 
 ## Hacking Guide
 
-Later. The basic interfaces might change. You can always take a look in the code. Is very minimal.
+The basic interfaces might change. You can always take a look in the code. Is very minimal.
 
 # Notes on zip & rar
 
