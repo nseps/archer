@@ -129,6 +129,7 @@ func (a cpioArchiver) Unpack(src io.Reader, target string) error {
 			if _, err := io.Copy(f, cpior); err != nil {
 				return err
 			}
+			f.Close()
 		case mode.IsSymlink():
 			if err := os.Symlink(hdr.Linkname, path); err != nil {
 				return err

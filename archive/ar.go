@@ -113,6 +113,7 @@ func (a arArchiver) Unpack(src io.Reader, target string) error {
 			if _, err := io.Copy(f, arr); err != nil {
 				return err
 			}
+			f.Close()
 		}
 	}
 }

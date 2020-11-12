@@ -145,6 +145,7 @@ func (a zipArchiver) Unpack(src io.Reader, target string) error {
 				return err
 			}
 			rc.Close()
+			f.Close()
 		case mode.IsSymlink():
 			rc, err := zf.Open()
 			if err != nil {
